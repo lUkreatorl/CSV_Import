@@ -1,0 +1,29 @@
+<div class="container">
+  <h2>Person Records</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date of Birth</th>
+        <th>Married</th>
+        <th>Phone</th>
+        <th>Salary</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let personForm of personForms; let i = index" [formGroup]="personForm">
+        <td><input type="text" formControlName="name"></td>
+        <td><input type="date" formControlName="dateOfBirth"></td>
+        <td><input type="checkbox" formControlName="married"></td>
+        <td><input type="text" formControlName="phone"></td>
+        <td><input type="number" formControlName="salary"></td>
+        <td>
+          <button type="button" (click)="savePerson(i)">Save</button>
+          <button type="button" (click)="deletePerson(persons[i].id)">Delete</button>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>

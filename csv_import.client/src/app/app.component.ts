@@ -1,37 +1,50 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
+import { PersonService } from './services/person.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public forecasts: WeatherForecast[] = [];
+  title = 'CSV Upload and Person Records';
+  selectedFile: File | null = null;
+  persons: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private personService: PersonService) { }
 
-  ngOnInit() {
-    this.getForecasts();
+  ngOnInit(): void {
+    this.loadPersons();
   }
 
-  getForecasts() {
-    this.http.get<WeatherForecast[]>('/weatherforecast').subscribe(
-      (result) => {
-        this.forecasts = result;
+  loadPersons(): void {
+    this.personService.getPersons().subscribe(
+      (data: any[]) => {  
+        this.persons = data;
       },
-      (error) => {
-        console.error(error);
+      (error: any) => { 
+        console.error('Error fetching persons', error);
       }
     );
   }
 
-  title = 'csv_import.client';
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+  
+  onUpload(): void {
+    if (this.selectedFile) {
+      this.personService.uploadCsv(this.selectedFile).subscribe(
+        (response: any) => { 
+          alert('File uploaded successfully!');
+          this.loadPersons(); 
+        },
+        (error: any) => {  
+          console.error('Error uploading file', error);
+        }
+      );
+    } else {
+      alert('Please select a file first.');
+    }
+  }
 }
